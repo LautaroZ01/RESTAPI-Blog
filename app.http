@@ -1,0 +1,27 @@
+### Recuperar un usuario por username
+GET http://localhost:3000/api/user
+
+### Registrar un usuario
+POST http://localhost:3000/api/user/registro
+Content-Type: application/json
+
+{
+  "username": "Ender4",
+  "surname": "ender",
+  "email": "ender4@gmail.com",
+  "password": "123",
+  "address": "Mi casa",
+  "birthdate": "1990-01-01"
+}
+
+### Logear un usuario
+POST http://localhost:3000/api/user/login
+Content-Type: application/json
+
+{
+  "username": "ender@gmail.com",
+  "password": "123"
+}
+
+### Ver perfil de usuario
+GET http://localhost:3000/api/user/profile
