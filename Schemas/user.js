@@ -6,6 +6,9 @@ const userSchema = z.object({
         message: 'El nombre de usuario debe ser una cadena de caracteres',
         required_error: "El nombre de usuario es obligatorio"
     }),
+    googleId: z.string({
+        message:"La id de google debe ser un caracter"
+    }).default(''),
     surname: z.string({
         invalid_type_error: "El apellido debe ser una cadena de caracteres",
         message:"El apellido debe ser una cadena de caracteres",
@@ -26,13 +29,9 @@ const userSchema = z.object({
     }),
     birthdate: z.string({
         message: 'La fecha es requerida'
-    }).date(),
+    }).date().default(new Date("2000-01-01")),
     photo: z.string().url({
         message: 'La foto debe ser una URL válida'
-    }).refine((url) => {
-        return ['.jpg', '.png', '.svg'].some(ext => url.endsWith(ext));
-    }, {
-        message: 'La foto debe tener una extensión válida (.jpg, .png, .svg)',
     }).default('https://user.svg'),
     created_at: z.date().default(new Date()),
     id_rol: z.number().default(2)

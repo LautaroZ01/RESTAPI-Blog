@@ -20,7 +20,7 @@ Content-Type: application/json
 
 {
   "username": "ender@gmail.com",
-  "password": "123"
+  "password": "123456"
 }
 
 ### Ver perfil de usuario

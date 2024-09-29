@@ -10,17 +10,17 @@ export const auth = (req, res, next) => {
     if (!token) {
         return res.status(403).json({
             status: 'error',
-            message:'Acceso denegado'
+            message: 'Acceso denegado'
         })
     }
 
     try {
         const data = jwt.verify(token, process.env.SECRET)
-        req.session = data.user
+        req.auth = data.user
     } catch (error) {
         return res.status(401).send({
             status: 'error',
-            message:'Acceso denegado por el servidor'
+            message: 'Acceso denegado por el servidor'
         })
     }
 

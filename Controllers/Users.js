@@ -127,6 +127,21 @@ export class UserController {
         }
     }
 
+    static async googleCallback(req, res) {
+
+        const token = jwt.sign({ user: req.user }, process.env.SECRET, {
+            expiresIn: '24h'
+        })
+
+        res.cookie('access_token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV == 'production', // la cookie solo se puede acceder en https
+            maxAge: 1000 * 60 * 60
+        })
+
+        res.redirect('http://localhost:5173/')
+    }
+
     static async logout(req, res) {
         res.clearCookie('access_token').json({
             status: 'success',
@@ -135,20 +150,30 @@ export class UserController {
     }
 
     static async profile(req, res) {
-        const { username } = req.session
+        const { username } = req.auth
+
+        if (!username) {
+            return res.status(400).json({
+                status: 'error',
+                error: 'Acceso no autorizado'
+            })
+        }
 
         try {
             const user = await UsersModule.getByUsername({ username })
+
             if (!user) {
                 return res.status(400).json({
                     status: "error",
                     error: 'El usuario no existe'
                 })
             }
+
             return res.json({
                 status: 'success',
                 user: user
             })
+
         } catch (error) {
             return res.status(400).json({
                 status: "error",
