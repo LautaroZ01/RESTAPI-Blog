@@ -16,7 +16,7 @@ passport.use(new GoogleStrategy({
         let user = await UsersModule.getByGoogleId({ googleId: profile.id });
 
         if (!user) {
-            const randomPassword = await bcrypt.hash(Math.random().toString(36).slice(-8), 10);
+            const randomPassword = await bcrypt.hash(Math.random().toString(36).slice(-8), parseInt(process.env.SALT_ROUNDS));
 
             console.log("Soy la id de google ", profile.id)
 
@@ -50,7 +50,7 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser(async (id, done) => {
     try {
-        const user = await UsersModule.getById(id);
+        const user = await UsersModule.getById({ id });
         done(null, user);
     } catch (error) {
         done(error, false)

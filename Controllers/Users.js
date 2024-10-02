@@ -77,7 +77,10 @@ export class UserController {
         const result = validatParcialUser(req.body);
 
         if (result.error) {
-            return res.status(400).json({ error: JSON.parse(result.error.message) })
+            return res.status(400).json({
+                status: 'error',
+                error: JSON.parse(result.error.message)
+            })
         }
 
         const { username, password } = result.data
@@ -127,6 +130,29 @@ export class UserController {
         }
     }
 
+    static async logout(req, res) {
+        res.clearCookie('access_token').json({
+            status: 'success',
+            message: 'Sesion cerrada con exito'
+        })
+    }
+
+    static async getSession(req, res) {
+        const user = req.auth
+
+        if (!user) {
+            return res.status(400).json({
+                status: 'error',
+                message: 'La sesion ha caducado'
+            })
+        }
+
+        return res.json({
+            status: 'success',
+            user
+        })
+    }
+
     static async googleCallback(req, res) {
 
         const token = jwt.sign({ user: req.user }, process.env.SECRET, {
@@ -142,17 +168,10 @@ export class UserController {
         res.redirect('http://localhost:5173/')
     }
 
-    static async logout(req, res) {
-        res.clearCookie('access_token').json({
-            status: 'success',
-            message: 'Sesion cerrada con exito'
-        })
-    }
-
     static async profile(req, res) {
-        const { username } = req.auth
+        const { id } = req.auth
 
-        if (!username) {
+        if (!id) {
             return res.status(400).json({
                 status: 'error',
                 error: 'Acceso no autorizado'
@@ -160,7 +179,7 @@ export class UserController {
         }
 
         try {
-            const user = await UsersModule.getByUsername({ username })
+            const user = await UsersModule.getById({ id })
 
             if (!user) {
                 return res.status(400).json({
@@ -175,10 +194,47 @@ export class UserController {
             })
 
         } catch (error) {
-            return res.status(400).json({
+            return res.status(500).json({
                 status: "error",
                 error: 'El usuario no existe'
             })
         }
+    }
+
+    static async edit(req, res) {
+        const result = validatParcialUser(req.body)
+        const { id } = req.auth
+
+        if (result.error) {
+            return res.status(400).json({
+                status: "error",
+                error: JSON.parse(result.error.message)
+            })
+        }
+
+        const { data } = result
+
+        try {
+            const userEdit = await UsersModule.edit({ id, input: data })
+
+            if (!userEdit) {
+                return res.status(400).json({
+                    status: "error",
+                    error: 'Ya existe un usuario con ese nombre'
+                })
+            }
+
+            return res.json({
+                status: 'success',
+                user: userEdit
+            })
+
+        } catch (error) {
+            return res.status(500).json({
+                status: "error",
+                error: "Algo salio mal"
+            })
+        }
+
     }
 }

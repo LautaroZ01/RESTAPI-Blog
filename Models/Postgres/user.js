@@ -23,7 +23,7 @@ export class UsersModule {
 
     static async getById({ id }) {
         try {
-            const res = await connection.query('select u.id, u.username, u.surname, u.email, u.address, u.birthdate, u.photo, r.name as rol from users u inner join roles r on u.id_rol = r.id where u.id like $1;', [id])
+            const res = await connection.query('select u.id, u.username, u.surname, u.email, u.address, u.birthdate, u.photo, r.name as rol from users u inner join roles r on u.id_rol = r.id where u.id = $1;', [id])
             return res.rows[0]
         } catch (error) {
             return false
@@ -59,6 +59,7 @@ export class UsersModule {
             const user = await connection.query('SELECT * FROM users WHERE username like $1', [username])
             return user.rows[0]
         } catch (error) {
+            console.log(error)
             return false
         }
     }
@@ -71,6 +72,35 @@ export class UsersModule {
             }
 
             return res.rows[0]
+        } catch (error) {
+            return false
+        }
+    }
+
+    static async edit({ id, input }) {
+        const fields = Object.keys(input);
+        const values = Object.values(input);
+
+        if (fields.length === 0) {
+            return false
+        }
+
+        try {
+            // Crear la parte dinámica del SET
+            const setClause = fields.map((field, index) => `${field} = $${index + 1}`).join(', ');
+            values.push(id);
+
+            const query = `UPDATE users SET ${setClause} WHERE id = $${fields.length + 1};`;
+    
+            const res = await connection.query(query, values);
+            const userEdited = await connection.query('select u.id, u.username, u.surname, u.email, u.address, u.birthdate, u.photo, r.name as rol from users u inner join roles r on u.id_rol = r.id where u.id = $1;', [id])
+
+            if (res.rowCount == 0) {
+                return false
+            }
+
+            return userEdited.rows[0]
+
         } catch (error) {
             return false
         }
