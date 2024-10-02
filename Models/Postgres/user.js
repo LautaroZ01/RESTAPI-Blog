@@ -43,7 +43,7 @@ export class UsersModule {
     static async create({ input }) {
         try {
             const { username, surname, email, password, address, birthdate, photo, created_at, id_rol, googleId } = input
-            const isUser = await connection.query('SELECT * FROM users WHERE username like $1', [username])
+            const isUser = await connection.query('SELECT * FROM users WHERE email like $1', [email])
 
             if (isUser.rows.length != 0) {
                 return false
@@ -56,17 +56,16 @@ export class UsersModule {
                 const res = await connection.query('INSERT INTO users (username, surname, email, password, address, birthdate, photo, created_at, id_rol) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)', [username, surname, email, password, address, birthdate, photo, created_at, id_rol]);
             }
 
-            const user = await connection.query('SELECT * FROM users WHERE username like $1', [username])
+            const user = await connection.query('SELECT * FROM users WHERE email like $1', [email])
             return user.rows[0]
         } catch (error) {
-            console.log(error)
             return false
         }
     }
 
-    static async login({ username }) {
+    static async login({ email }) {
         try {
-            const res = await connection.query('select u.id, u.username, u.email, u.password, u.photo, r.name as rol from users u inner join roles r on u.id_rol = r.id where u.username like $1 OR u.email like $2', [username, username])
+            const res = await connection.query('select u.id, u.username, u.email, u.password, u.photo, r.name as rol from users u inner join roles r on u.id_rol = r.id where u.email like $1', [email])
             if (res.rows.length == 0) {
                 return false
             }

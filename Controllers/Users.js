@@ -83,11 +83,11 @@ export class UserController {
             })
         }
 
-        const { username, password } = result.data
+        const { email, password } = result.data
 
 
         try {
-            const user = await UsersModule.login({ username });
+            const user = await UsersModule.login({ email });
 
             if (!user) {
                 return res.status(400).json({

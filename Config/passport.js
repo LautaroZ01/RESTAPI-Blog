@@ -18,8 +18,6 @@ passport.use(new GoogleStrategy({
         if (!user) {
             const randomPassword = await bcrypt.hash(Math.random().toString(36).slice(-8), parseInt(process.env.SALT_ROUNDS));
 
-            console.log("Soy la id de google ", profile.id)
-
             const newUser = {
                 username: profile.name.givenName || profile.displayName,
                 googleId: profile.id,
