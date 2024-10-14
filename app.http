@@ -46,7 +46,7 @@ GET http://localhost:3000/api/post
 GET http://localhost:3000/api/post?category=Alienigenas&limit=1
 
 ### Recuperar un post por id
-GET http://localhost:3000/api/post/1
+GET http://localhost:3000/api/post/2
 
 ### Insertar un articulo
 POST http://localhost:3000/api/post
