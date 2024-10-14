@@ -37,3 +37,23 @@ GET http://localhost:3000/api/user/profile
 
 ### Informacion de la sesion
 GET http://localhost:3000/api/user/sesion
+
+
+### Recuperar todos los posts
+GET http://localhost:3000/api/post
+
+### Recuperar todos los posts por categoria
+GET http://localhost:3000/api/post?category=Alienigenas&limit=1
+
+### Recuperar un post por id
+GET http://localhost:3000/api/post/1
+
+### Insertar un articulo
+POST http://localhost:3000/api/post
+Content-Type: application/json
+
+{
+  "title": "Los extraterrestres",
+  "content": "Los extraterrestres, o seres de otros planetas, han sido tema de fascinación y especulación a lo largo de la historia. A pesar de que no existen pruebas concluyentes de su existencia, la posibilidad de vida en otros planetas ha intrigado tanto a científicos como a la cultura popular. En la ciencia, el campo de la astrobiología estudia la potencial existencia de vida más allá de la Tierra, mientras que descubrimientos como exoplanetas en la zona habitable alimentan la especulación. Los relatos de encuentros con ovnis y seres extraterrestres abundan en la literatura, cine y mitología, reflejando nuestra curiosidad por el universo y lo desconocido.",
+  "id_category": 1
+}

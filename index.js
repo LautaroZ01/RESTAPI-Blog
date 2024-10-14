@@ -1,11 +1,12 @@
 import express, { urlencoded } from 'express';
 import dotenv from 'dotenv';
 import { userRouter } from './Routes/users.js';
+import { postRouter } from './Routes/posts.js';
 import { corsMiddleware } from './Middlewares/cors.js';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import passport from 'passport';
-import cookieSession from 'cookie-session';
+import './Config/passport.js';
 
 
 dotenv.config()
@@ -24,7 +25,7 @@ app.use(session({
     cookie: { secure: process.env.NODE_ENV === 'production' }
   }));
 
-import './Config/passport.js';  // Archivo donde configurarás Passport
+
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -33,6 +34,7 @@ app.get('/', (req, res) => {
 })
 
 app.use('/api/user', userRouter);
+app.use('/api/post', postRouter);
 
 
 app.listen(PORT, () => {
