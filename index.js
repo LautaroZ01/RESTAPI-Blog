@@ -7,6 +7,8 @@ import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import passport from 'passport';
 import './Config/passport.js';
+import { likeRouter } from './Routes/likes.js';
+import { commentRouter } from './Routes/comments.js';
 
 
 dotenv.config()
@@ -23,7 +25,7 @@ app.use(session({
     resave: false,
     saveUninitialized: true,
     cookie: { secure: process.env.NODE_ENV === 'production' }
-  }));
+}));
 
 
 app.use(passport.initialize());
@@ -35,6 +37,8 @@ app.get('/', (req, res) => {
 
 app.use('/api/user', userRouter);
 app.use('/api/post', postRouter);
+app.use('/api/like', likeRouter);
+app.use('/api/comment', commentRouter);
 
 
 app.listen(PORT, () => {

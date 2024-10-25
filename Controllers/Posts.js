@@ -1,3 +1,4 @@
+import { CategoryModule } from "../Models/Postgres/category.js";
 import { PostsModule } from "../Models/Postgres/post.js"
 import { validatPosts } from "../Schemas/post.js";
 
@@ -24,6 +25,31 @@ export class PostController {
             return res.status(500).json({
                 status: 'error',
                 error: 'Se produjo un error al intentar traer todos los articulos'
+            })
+        }
+    }
+
+    static async getAllCategories(req, res) {
+        try {
+            const request = await CategoryModule.getAll();
+
+            if (!request) {
+                return res.status(400).json({
+                    status: "error",
+                    error: 'No hay categorias disponibles'
+                })
+            }
+
+            return res.json({
+                status: 'success',
+                categories: request
+            })
+
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json({
+                status: 'error',
+                error: 'Se produjo un error al intentar traer todos las categorias'
             })
         }
     }
@@ -57,7 +83,6 @@ export class PostController {
 
 
         } catch (error) {
-            console.log(error)
             return res.status(500).json({
                 status: 'error',
                 error: 'Se produjo un error al intentar crear un articulos'

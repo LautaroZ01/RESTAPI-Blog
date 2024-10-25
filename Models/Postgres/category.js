@@ -1,6 +1,20 @@
 import { connection } from "../../Database/postgres.js"
 
 export class CategoryModule {
+    static async getAll() {
+        try {
+            const res = await connection.query('select * from categories c;')
+
+            if (res.rowCount == 0) {
+                return false
+            }
+
+            return res.rows;
+        } catch (error) {
+            return false
+        }
+    }
+
     static async getById({ id }) {
 
         try {

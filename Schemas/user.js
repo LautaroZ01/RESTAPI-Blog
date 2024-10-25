@@ -29,7 +29,7 @@ const userSchema = z.object({
     }),
     birthdate: z.string({
         message: 'La fecha es requerida'
-    }).date().default(new Date("2000-01-01")),
+    }).date().default(new Date()),
     photo: z.string().url({
         message: 'La foto debe ser una URL válida'
     }).default('https://user.svg'),

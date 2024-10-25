@@ -8,7 +8,7 @@ Content-Type: application/json
 {
   "username": "Ender",
   "surname": "Tomate",
-  "email": "ender@gmail.com",
+  "email": "tomate@gmail.com",
   "password": "123",
   "address": "Mi casa",
   "birthdate": "1990-01-01"
@@ -38,9 +38,13 @@ GET http://localhost:3000/api/user/profile
 ### Informacion de la sesion
 GET http://localhost:3000/api/user/sesion
 
+### ---------------------------------------------------
 
 ### Recuperar todos los posts
 GET http://localhost:3000/api/post
+
+### Recuperar todas las categorias
+GET http://localhost:3000/api/post/categories
 
 ### Recuperar todos los posts por categoria
 GET http://localhost:3000/api/post?category=Alienigenas&limit=1
@@ -57,3 +61,54 @@ Content-Type: application/json
   "content": "Los extraterrestres, o seres de otros planetas, han sido tema de fascinación y especulación a lo largo de la historia. A pesar de que no existen pruebas concluyentes de su existencia, la posibilidad de vida en otros planetas ha intrigado tanto a científicos como a la cultura popular. En la ciencia, el campo de la astrobiología estudia la potencial existencia de vida más allá de la Tierra, mientras que descubrimientos como exoplanetas en la zona habitable alimentan la especulación. Los relatos de encuentros con ovnis y seres extraterrestres abundan en la literatura, cine y mitología, reflejando nuestra curiosidad por el universo y lo desconocido.",
   "id_category": 1
 }
+
+### ---------------------------------------------------
+
+### Ruta de likes
+GET http://localhost:3000/api/like/1
+
+### Dar like
+POST http://localhost:3000/api/like
+Content-Type: application/json
+
+{
+  "id_post": 2
+}
+
+### Quitar like
+DELETE http://localhost:3000/api/like
+Content-Type: application/json
+
+{
+  "id_post": 2
+}
+
+
+### Agregar un comentario
+POST http://localhost:3000/api/comment
+Content-Type: application/json
+
+{
+  "id_post": 1,
+  "content": "Hola comentario nuevo"
+}
+
+### Eliminar un comentario
+DELETE http://localhost:3000/api/comment
+Content-Type: application/json
+
+{
+  "id_comment": 13
+}
+
+### Eliminar un comentario
+PATCH http://localhost:3000/api/comment
+Content-Type: application/json
+
+{
+  "id_comment": 25,
+  "content": "Hola comentario editado"
+}
+
+### Recuperar comentarios de un post
+GET http://localhost:3000/api/comment/1

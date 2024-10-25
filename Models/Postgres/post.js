@@ -64,6 +64,7 @@ export class PostsModule {
             const res = await connection.query(`
                     SELECT 
                         u.username AS author,
+                        u.surname,
                         u.photo,
                         a.description,
                         p.id,

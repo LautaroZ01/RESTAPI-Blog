@@ -6,4 +6,6 @@ export const postRouter = Router();
 
 postRouter.get('/', PostController.getAll);
 postRouter.post('/', auth, PostController.create);
+
+postRouter.get('/categories', PostController.getAllCategories);
 postRouter.get('/:id', PostController.getById);
