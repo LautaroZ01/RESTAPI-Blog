@@ -2,6 +2,7 @@ import { Router } from "express";
 import { UserController } from "../Controllers/Users.js";
 import { auth } from '../Middlewares/auth.js'
 import passport from "passport";
+import { upload } from "../Middlewares/upload.js";
 
 
 export const userRouter = Router();
@@ -16,6 +17,7 @@ userRouter.post('/registro', UserController.register)
 userRouter.post('/login', UserController.login)
 
 userRouter.patch('/edit', auth, UserController.edit)
+userRouter.post('/upload', [auth, upload.fields([{name: 'photo', maxCount: 1}])], UserController.upload)
 
 
 userRouter.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));

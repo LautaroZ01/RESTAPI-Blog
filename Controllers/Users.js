@@ -3,6 +3,7 @@ import { validatParcialUser, validatUsers } from "../Schemas/user.js";
 import dotenv from 'dotenv'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import { uploadFile } from "../Models/Firebase/firebase.js";
 
 dotenv.config()
 
@@ -135,6 +136,37 @@ export class UserController {
             status: 'success',
             message: 'Sesion cerrada con exito'
         })
+    }
+
+    static async upload(req, res) {
+        const photo = req.files.photo
+
+        const { id } = req.auth
+
+        if (photo && photo.length > 0) {
+            try {
+                const { ref, downloadURL } = await uploadFile(photo[0], 600, 600)
+
+                const userAvatar = await UsersModule.uploadAvatar({ id, fileURL: downloadURL })
+
+                if (!userAvatar) {
+                    return res.status(400).json({
+                        status: 'error',
+                        error: 'No se pudo actualizar el Avatar'
+                    })
+                }
+
+                return res.json({
+                    status: 'success',
+                    photo: userAvatar.photo
+                })
+            } catch (error) {
+                return res.status(500).json({
+                    status: "error",
+                    error: "Algo salio mal en el servidor"
+                })
+            }
+        }
     }
 
     static async getSession(req, res) {

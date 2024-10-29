@@ -90,7 +90,7 @@ export class UsersModule {
             values.push(id);
 
             const query = `UPDATE users SET ${setClause} WHERE id = $${fields.length + 1};`;
-    
+
             const res = await connection.query(query, values);
             const userEdited = await connection.query('select u.id, u.username, u.surname, u.email, u.address, u.birthdate, u.photo, r.name as rol from users u inner join roles r on u.id_rol = r.id where u.id = $1;', [id])
 
@@ -99,6 +99,22 @@ export class UsersModule {
             }
 
             return userEdited.rows[0]
+
+        } catch (error) {
+            return false
+        }
+    }
+
+    static async uploadAvatar({ id, fileURL }) {
+        try {
+
+            const res = await connection.query('update users set photo = $1 where id = $2;', [fileURL, id])
+
+            if (res.rowCount == 0) {
+                return false
+            }
+
+            return this.getById({id});
 
         } catch (error) {
             return false
