@@ -50,7 +50,7 @@ export class CommentModel {
             const res = await connection.query(`
                 select u.id as id_user, u.username, u.photo, c.id, c.content, c.create_at from comments c 
                 inner join users u on c.id_user = u.id
-                where c.id_post = $1; `,
+                where c.id_post = $1 order by c.create_at desc; `,
                 [id_post]
             )
 
