@@ -3,12 +3,14 @@ import { UserController } from "../Controllers/Users.js";
 import { auth } from '../Middlewares/auth.js'
 import passport from "passport";
 import { upload } from "../Middlewares/upload.js";
+import { adminMiddleware } from "../Middlewares/admin.js";
 
 
 export const userRouter = Router();
 
 
-userRouter.get('/', auth, UserController.getAll)
+userRouter.get('/', [auth, adminMiddleware], UserController.getAll)
+userRouter.post('/rol', [auth, adminMiddleware], UserController.editRol)
 userRouter.get('/logout', UserController.logout) 
 userRouter.get('/sesion', auth, UserController.getSession)
 userRouter.get('/profile', auth, UserController.profile)

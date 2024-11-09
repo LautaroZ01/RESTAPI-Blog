@@ -1,5 +1,8 @@
+import { uploadFile } from "../Models/Firebase/firebase.js";
 import { CategoryModule } from "../Models/Postgres/category.js";
 import { PostsModule } from "../Models/Postgres/post.js"
+import { PostImageModel } from "../Models/Postgres/postImage.js";
+import { StatesModule } from "../Models/Postgres/states.js";
 import { validatPosts } from "../Schemas/post.js";
 
 export class PostController {
@@ -46,10 +49,34 @@ export class PostController {
             })
 
         } catch (error) {
-            console.log(error)
             return res.status(500).json({
                 status: 'error',
                 error: 'Se produjo un error al intentar traer todos las categorias'
+            })
+        }
+    }
+
+    static async getAllStates (req, res){
+        try {
+            const request = await StatesModule.getAll();
+
+            if (!request) {
+                return res.status(400).json({
+                    status: "error",
+                    error: 'No hay estados disponibles'
+                })
+            }
+
+            return res.json({
+                status: 'success',
+                states: request
+            })
+
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json({
+                status: 'error',
+                error: 'Se produjo un error al intentar traer todos las estados'
             })
         }
     }
@@ -86,6 +113,41 @@ export class PostController {
             return res.status(500).json({
                 status: 'error',
                 error: 'Se produjo un error al intentar crear un articulos'
+            })
+        }
+    }
+
+    static async upload(req, res) {
+        const image = req.files.photo
+        const { id_post, id_type } = req.params
+
+        if (image && image.length > 0 && id_post) {
+            try {
+                const { ref, downloadURL } = await uploadFile(image[0], 1280, 720)
+
+                const postImage = await PostImageModel.create({ id_post, id_type, url: downloadURL })
+
+                if (!postImage) {
+                    return res.status(400).json({
+                        status: 'error',
+                        error: 'No se pudo subir la imagen'
+                    })
+                }
+
+                return res.json({
+                    status: 'success',
+                    message: 'La imagen se subio correctamente'
+                })
+            } catch (error) {
+                return res.status(500).json({
+                    status: "error",
+                    error: "Algo salio mal en el servidor"
+                })
+            }
+        } else {
+            return res.status(400).json({
+                status: 'error',
+                error: 'Faltan datos por enviar'
             })
         }
     }

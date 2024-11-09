@@ -269,4 +269,29 @@ export class UserController {
         }
 
     }
+
+    static async editRol(req, res){
+        const {id_user, id_rol} = req.body;
+        
+        try {
+            const rolUser = await UsersModule.editRol({id_user, id_rol})
+
+            if(!rolUser){
+                return res.status(400).json({
+                    status: "error",
+                    error: 'No se pudo actualizar el rol del usuario'
+                })
+            }
+
+            return res.json({
+                status: 'success',
+                rol: rolUser
+            })
+        } catch (error) {
+            return res.status(500).json({
+                status: "error",
+                error: "Algo salio mal en el servidor"
+            })
+        }
+    }
 }
