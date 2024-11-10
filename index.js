@@ -10,6 +10,7 @@ import './Config/passport.js';
 import { likeRouter } from './Routes/likes.js';
 import { commentRouter } from './Routes/comments.js';
 import { roleRouter } from './Routes/roles.js';
+import { categoryRouter } from './Routes/category.js';
 
 
 dotenv.config()
@@ -41,6 +42,7 @@ app.use('/api/post', postRouter);
 app.use('/api/like', likeRouter);
 app.use('/api/comment', commentRouter);
 app.use('/api/rol', roleRouter);
+app.use('/api/category', categoryRouter);
 
 
 app.listen(PORT, () => {

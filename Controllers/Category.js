@@ -1,27 +1,27 @@
-import { RolesModule } from "../Models/Postgres/roles.js"
-import { validatParcialRoles, validatRoles } from "../Schemas/roles.js";
+import { CategoryModule } from "../Models/Postgres/category.js"
+import { validatCategories, validatParcialCategories } from "../Schemas/category.js";
 
-export class RoleController {
+export class CategoryController {
     static async getAll(req, res) {
         try {
-            const roles = await RolesModule.getAll();
+            const categories = await CategoryModule.getAll();
 
-            if (!roles) {
+            if (!categories) {
                 return res.status(400).json({
-                    status: "error",
-                    error: 'No hay roles'
+                    status: 'error',
+                    error: 'No se pudo obtener las categorias'
                 })
             }
 
             return res.json({
                 status: 'success',
-                roles
+                categories,
             })
+
         } catch (error) {
-            console.log(error)
             return res.status(500).json({
                 status: 'error',
-                error: 'Se produjo un error al intentar traer todos los roles'
+                error: 'Algo salio mal en el servidor'
             })
         }
     }
@@ -30,18 +30,18 @@ export class RoleController {
         const { id } = req.params
 
         try {
-            const roles = await RolesModule.getById({ id });
+            const category = await CategoryModule.getById({ id });
 
-            if (!roles) {
+            if (!category) {
                 return res.status(400).json({
                     status: 'error',
-                    error: 'Ese rol no existe'
+                    error: 'Esa categoria no existe'
                 })
             }
 
             return res.json({
                 status: 'success',
-                roles
+                category
             })
 
         } catch (error) {
@@ -53,28 +53,28 @@ export class RoleController {
     }
 
     static async create(req, res) {
-        const newRol = validatRoles(req.body)
+        const newCategory = validatCategories(req.body)
 
-        if (newRol.error) {
+        if (newCategory.error) {
             return res.status(400).json({
                 status: 'error',
-                error: JSON.parse(newRol.error.message)
+                error: JSON.parse(newCategory.error.message)
             })
         }
 
         try {
-            const rol = await RolesModule.create({ input: newRol.data })
+            const category = await CategoryModule.create({ input: newCategory.data })
 
-            if (!rol) {
+            if (!category) {
                 return res.status(400).json({
                     status: 'error',
-                    error: 'No se pudo crear el rol'
+                    error: 'No se pudo crear la categoria'
                 })
             }
 
             return res.json({
                 status: 'success',
-                rol
+                category
             })
 
         } catch (error) {
@@ -86,7 +86,7 @@ export class RoleController {
     }
 
     static async edit(req, res) {
-        const result = validatParcialRoles(req.body)
+        const result = validatParcialCategories(req.body)
         const { id } = req.params
 
         if (result.error) {
@@ -98,18 +98,18 @@ export class RoleController {
 
         try {
 
-            const rol = await RolesModule.edit({ id, input: result.data });
+            const category = await CategoryModule.edit({ id, input: result.data });
 
-            if (!rol) {
+            if (!category) {
                 return res.status(400).json({
                     status: 'error',
-                    error: 'No se pudo actualizar el rol'
+                    error: 'No se pudo actualizar la categoria'
                 })
             }
 
             return res.json({
                 status: 'success',
-                rol
+                category
             })
 
         } catch (error) {
@@ -124,18 +124,18 @@ export class RoleController {
         const { id } = req.body
 
         try {
-            const deleteRol = await RolesModule.delete({ id })
+            const deleteCategory = await CategoryModule.delete({ id })
 
-            if (!deleteRol) {
+            if (!deleteCategory) {
                 return res.status(400).json({
                     status: 'error',
-                    error: 'No se pudo eliminar el rol'
+                    error: 'No se pudo eliminar la categoria'
                 })
             }
 
             return res.json({
                 status: 'success',
-                message: 'El rol se elimino exitosamente'
+                message: 'La categoria se elimino exitosamente'
             })
 
         } catch (error) {

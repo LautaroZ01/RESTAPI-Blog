@@ -96,6 +96,7 @@ Content-Type: application/json
   "id_post": 2
 }
 
+### -----------------------------------------------------------------------
 
 ### Agregar un comentario
 POST http://localhost:3000/api/comment
@@ -126,6 +127,66 @@ Content-Type: application/json
 ### Recuperar comentarios de un post
 GET http://localhost:3000/api/comment/1
 
+### ----------------------------------------------------
+
+### Recuperar las categorias
+GET http://localhost:3000/api/category
+
+### Recuperar una categoria
+GET http://localhost:3000/api/category/2
+
+### Agregar una categoria
+POST http://localhost:3000/api/category
+Content-Type: application/json
+
+{
+  "name": "Politica"
+}
+
+### Actualizar una categoria
+PATCH http://localhost:3000/api/category/3
+Content-Type: application/json
+
+{
+  "name": "Tecnologia"
+}
+
+### Eliminar una categoria
+DELETE http://localhost:3000/api/category
+Content-Type: application/json
+
+{
+  "id": 3
+}
 
 ### ----------------------------------------------------
+
+### Recuperar los roles
 GET http://localhost:3000/api/rol
+
+### Recuperar un rol
+GET http://localhost:3000/api/rol/2
+
+### Agregar un rol
+POST http://localhost:3000/api/rol
+Content-Type: application/json
+
+{
+  "name": "Editor"
+}
+
+### Actualizar un rol
+PATCH http://localhost:3000/api/rol/4
+Content-Type: application/json
+
+{
+  "name": "Carpintero"
+}
+
+### Eliminar un rol
+DELETE http://localhost:3000/api/rol
+Content-Type: application/json
+
+{
+  "id": 4
+}
