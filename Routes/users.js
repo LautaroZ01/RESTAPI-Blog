@@ -21,6 +21,7 @@ userRouter.post('/login', UserController.login)
 userRouter.patch('/edit', auth, UserController.edit)
 userRouter.post('/upload', [auth, upload.fields([{name: 'photo', maxCount: 1}])], UserController.upload)
 
-
 userRouter.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 userRouter.get('/google/callback', passport.authenticate('google', { failureRedirect: 'http://localhost:5173/user' }), UserController.googleCallback)
+
+userRouter.post('/send-email', UserController.sendEmail);

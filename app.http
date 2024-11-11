@@ -38,6 +38,16 @@ GET http://localhost:3000/api/user/profile
 ### Informacion de la sesion
 GET http://localhost:3000/api/user/sesion
 
+### Envia un email
+POST http://localhost:3000/api/user/send-email
+Content-Type: application/json
+
+{
+  "subject": "Editor",
+  "text": "Probando envio de email"
+}
+
+
 ### ---------------------------------------------------
 
 ### Recuperar todos los posts
