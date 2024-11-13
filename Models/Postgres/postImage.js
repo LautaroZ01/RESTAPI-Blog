@@ -12,4 +12,18 @@ export class PostImageModel {
             return false
         }
     }
+
+    static async edit({ id, url }) {
+        try {
+            const res = await connection.query('update post_image set image_url = $1 where id = $2', [url, id])
+
+            if (res.rowCount == 0) {
+                return false
+            }
+
+            return true
+        } catch (error) {
+            return false
+        }
+    }
 }

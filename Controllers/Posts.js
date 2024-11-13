@@ -3,7 +3,7 @@ import { CategoryModule } from "../Models/Postgres/category.js";
 import { PostsModule } from "../Models/Postgres/post.js"
 import { PostImageModel } from "../Models/Postgres/postImage.js";
 import { StatesModule } from "../Models/Postgres/states.js";
-import { validatPosts } from "../Schemas/post.js";
+import { validatParcialPost, validatPosts } from "../Schemas/post.js";
 
 export class PostController {
     static async getAll(req, res) {
@@ -56,7 +56,7 @@ export class PostController {
         }
     }
 
-    static async getAllStates (req, res){
+    static async getAllStates(req, res) {
         try {
             const request = await StatesModule.getAll();
 
@@ -103,7 +103,7 @@ export class PostController {
                 })
             }
 
-            return res.json({
+            return res.status(201).json({
                 status: 'success',
                 post: newPost
             })
@@ -152,6 +152,44 @@ export class PostController {
         }
     }
 
+    static async editUpload(req, res) {
+        const image = req.files.photo
+        const { id } = req.params
+
+        if (image && image.length > 0 && id) {
+
+            try {
+                const { ref, downloadURL } = await uploadFile(image[0], 1280, 720)
+
+                const editedImage = await PostImageModel.edit({ id, url: downloadURL })
+
+                if (!editedImage) {
+                    return res.status(400).json({
+                        status: 'error',
+                        error: 'No se pudo actualizar la imagen'
+                    })
+                }
+
+                return res.json({
+                    status: 'success',
+                    message: 'La imagen se subio correctamente'
+                })
+
+            } catch (error) {
+                return res.status(500).json({
+                    status: "error",
+                    error: "Algo salio mal en el servidor"
+                })
+            }
+
+        } else {
+            return res.status(400).json({
+                status: 'error',
+                error: 'Faltan datos por enviar'
+            })
+        }
+    }
+
     static async getById(req, res) {
         const { id } = req.params
 
@@ -179,8 +217,65 @@ export class PostController {
     }
 
     // Editar
+    static async edit(req, res) {
+        const post = validatParcialPost(req.body)
+        const { id } = req.params
 
-    // Cambiar visualizacion
+        if (post.error) {
+            return res.status(400).json({
+                status: 'error',
+                error: JSON.parse(post.error.message)
+            })
+        }
 
-    // Elimniar
+        try {
+            const editPost = await PostsModule.edit({ id, input: post.data });
+
+            if (!editPost) {
+                return res.status(400).json({
+                    status: 'error',
+                    error: 'No se pudo actualizar el post'
+                })
+            }
+
+            return res.json({
+                status: 'success',
+                post: editPost
+            })
+
+        } catch (error) {
+            return res.status(500).json({
+                status: 'error',
+                error: 'Algo salio mal en el servidor'
+            })
+        }
+    }
+
+    // Elimniar (Cambiar visualizacion)
+    static async delete(req, res) {
+        const { id } = req.body
+
+        try {
+
+            const deletedPost = await PostsModule.delete({id})
+
+            if(!deletedPost){
+                return res.status(400).json({
+                    status: 'error',
+                    error: 'No se pudo eliminar el post'
+                })
+            }
+
+            res.json({
+                status: 'success',
+                message: 'El post se elimino correctamente'
+            })
+
+        } catch (error) {
+            return res.status(500).json({
+                status: 'error',
+                error: 'Algo salio mal en el servidor'
+            })
+        }
+    }
 }

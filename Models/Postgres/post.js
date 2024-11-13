@@ -84,7 +84,7 @@ export class PostsModule {
                 LEFT JOIN (
                     SELECT 
                         id_post, 
-                        array_agg(jsonb_build_object('url', pi.image_url, 'type', it.name)) AS images
+                        array_agg(jsonb_build_object('id', pi.id,'url', pi.image_url, 'type', it.name)) AS images
                     FROM post_image pi
                     LEFT JOIN img_type it ON pi.id_type = it.id
                     GROUP BY id_post
@@ -102,6 +102,50 @@ export class PostsModule {
 
         } catch (error) {
             console.log(error)
+            return false
+        }
+    }
+
+    static async edit({ id, input }) {
+        const fields = Object.keys(input);
+        const values = Object.values(input);
+
+        if (fields.length === 0) {
+            return false
+        }
+
+        try {
+            const setClause = fields.map((field, index) => `${field} = $${index + 1}`).join(', ');
+            values.push(id);
+
+            const query = `UPDATE posts SET ${setClause} WHERE id = $${fields.length + 1};`;
+
+            const res = await connection.query(query, values);
+
+            if (res.rowCount == 0) {
+                return false
+            }
+
+            const post = await this.getById({ id })
+
+            return post;
+        } catch (error) {
+            console.log(error)
+            return false;
+        }
+    }
+
+    static async delete({ id }) {
+        try {
+            const res = await connection.query('update posts set id_state = 4 where id = $1', [id])
+
+            if(res.rowCount == 0) {
+                return false
+            }
+
+            return true
+
+        } catch (error) {
             return false
         }
     }

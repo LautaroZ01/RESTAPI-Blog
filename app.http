@@ -65,6 +65,15 @@ GET http://localhost:3000/api/post?category=Alienigenas&limit=1
 ### Recuperar un post por id
 GET http://localhost:3000/api/post/4
 
+### Recuperar un post por id
+DELETE  http://localhost:3000/api/post
+Content-Type: application/json
+
+{
+  "id": 4
+}
+
+
 ### Insertar un articulo
 POST http://localhost:3000/api/post
 Content-Type: application/json
@@ -73,6 +82,14 @@ Content-Type: application/json
   "title": "Los extraterrestres 6",
   "content": "Los extraterrestres, o seres de otros planetas, han sido tema de fascinación y especulación a lo largo de la historia. A pesar de que no existen pruebas concluyentes de su existencia, la posibilidad de vida en otros planetas ha intrigado tanto a científicos como a la cultura popular. En la ciencia, el campo de la astrobiología estudia la potencial existencia de vida más allá de la Tierra, mientras que descubrimientos como exoplanetas en la zona habitable alimentan la especulación. Los relatos de encuentros con ovnis y seres extraterrestres abundan en la literatura, cine y mitología, reflejando nuestra curiosidad por el universo y lo desconocido.",
   "id_category": 1
+}
+
+### Actualiza un articulo
+PATCH http://localhost:3000/api/post/33
+Content-Type: application/json
+
+{
+  "title": "Los extraterrestres"
 }
 
 ### Insertar una imagen a un articulo

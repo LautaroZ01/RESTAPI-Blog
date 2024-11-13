@@ -72,7 +72,7 @@ export class RoleController {
                 })
             }
 
-            return res.json({
+            return res.status(201).json({
                 status: 'success',
                 rol
             })
