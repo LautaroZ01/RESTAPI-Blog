@@ -4,6 +4,7 @@ import dotenv from 'dotenv'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { uploadFile } from "../Models/Firebase/firebase.js";
+import { email } from "../Config/email.js";
 
 dotenv.config()
 
@@ -268,5 +269,44 @@ export class UserController {
             })
         }
 
+    }
+
+    static async editRol(req, res) {
+        const { id_user, id_rol } = req.body;
+
+        try {
+            const rolUser = await UsersModule.editRol({ id_user, id_rol })
+
+            if (!rolUser) {
+                return res.status(400).json({
+                    status: "error",
+                    error: 'No se pudo actualizar el rol del usuario'
+                })
+            }
+
+            return res.json({
+                status: 'success',
+                rol: rolUser
+            })
+        } catch (error) {
+            return res.status(500).json({
+                status: "error",
+                error: "Algo salio mal en el servidor"
+            })
+        }
+    }
+
+    static async sendEmail(req, res) {
+        const { subject, text } = req.body;
+
+        try {
+            let info = await email(subject, text);
+            res.status(200).json({
+                status: 'success',
+                message: `Email sent: ${info.response}`
+            });
+        } catch (error) {
+            res.status(500).send("Error sending email");
+        }
     }
 }

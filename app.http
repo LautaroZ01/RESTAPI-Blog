@@ -38,6 +38,16 @@ GET http://localhost:3000/api/user/profile
 ### Informacion de la sesion
 GET http://localhost:3000/api/user/sesion
 
+### Envia un email
+POST http://localhost:3000/api/user/send-email
+Content-Type: application/json
+
+{
+  "subject": "Editor",
+  "text": "Probando envio de email"
+}
+
+
 ### ---------------------------------------------------
 
 ### Recuperar todos los posts
@@ -46,20 +56,50 @@ GET http://localhost:3000/api/post
 ### Recuperar todas las categorias
 GET http://localhost:3000/api/post/categories
 
+### Recuperar todas los estados
+GET http://localhost:3000/api/post/estados
+
 ### Recuperar todos los posts por categoria
 GET http://localhost:3000/api/post?category=Alienigenas&limit=1
 
 ### Recuperar un post por id
-GET http://localhost:3000/api/post/2
+GET http://localhost:3000/api/post/4
+
+### Recuperar un post por id
+DELETE  http://localhost:3000/api/post
+Content-Type: application/json
+
+{
+  "id": 4
+}
+
 
 ### Insertar un articulo
 POST http://localhost:3000/api/post
 Content-Type: application/json
 
 {
-  "title": "Los extraterrestres",
+  "title": "Los extraterrestres 6",
   "content": "Los extraterrestres, o seres de otros planetas, han sido tema de fascinación y especulación a lo largo de la historia. A pesar de que no existen pruebas concluyentes de su existencia, la posibilidad de vida en otros planetas ha intrigado tanto a científicos como a la cultura popular. En la ciencia, el campo de la astrobiología estudia la potencial existencia de vida más allá de la Tierra, mientras que descubrimientos como exoplanetas en la zona habitable alimentan la especulación. Los relatos de encuentros con ovnis y seres extraterrestres abundan en la literatura, cine y mitología, reflejando nuestra curiosidad por el universo y lo desconocido.",
   "id_category": 1
+}
+
+### Actualiza un articulo
+PATCH http://localhost:3000/api/post/33
+Content-Type: application/json
+
+{
+  "title": "Los extraterrestres"
+}
+
+### Insertar una imagen a un articulo
+POST http://localhost:3000/api/post/upload
+Content-Type: application/json
+
+{
+  "id_post": 2,
+  "id_type": 1,
+  "file": 1
 }
 
 ### ---------------------------------------------------
@@ -83,6 +123,7 @@ Content-Type: application/json
   "id_post": 2
 }
 
+### -----------------------------------------------------------------------
 
 ### Agregar un comentario
 POST http://localhost:3000/api/comment
@@ -112,3 +153,67 @@ Content-Type: application/json
 
 ### Recuperar comentarios de un post
 GET http://localhost:3000/api/comment/1
+
+### ----------------------------------------------------
+
+### Recuperar las categorias
+GET http://localhost:3000/api/category
+
+### Recuperar una categoria
+GET http://localhost:3000/api/category/2
+
+### Agregar una categoria
+POST http://localhost:3000/api/category
+Content-Type: application/json
+
+{
+  "name": "Politica"
+}
+
+### Actualizar una categoria
+PATCH http://localhost:3000/api/category/3
+Content-Type: application/json
+
+{
+  "name": "Tecnologia"
+}
+
+### Eliminar una categoria
+DELETE http://localhost:3000/api/category
+Content-Type: application/json
+
+{
+  "id": 3
+}
+
+### ----------------------------------------------------
+
+### Recuperar los roles
+GET http://localhost:3000/api/rol
+
+### Recuperar un rol
+GET http://localhost:3000/api/rol/2
+
+### Agregar un rol
+POST http://localhost:3000/api/rol
+Content-Type: application/json
+
+{
+  "name": "Editor"
+}
+
+### Actualizar un rol
+PATCH http://localhost:3000/api/rol/4
+Content-Type: application/json
+
+{
+  "name": "Carpintero"
+}
+
+### Eliminar un rol
+DELETE http://localhost:3000/api/rol
+Content-Type: application/json
+
+{
+  "id": 4
+}

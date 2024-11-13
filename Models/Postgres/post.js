@@ -62,29 +62,36 @@ export class PostsModule {
         try {
 
             const res = await connection.query(`
+                SELECT 
+                    u.username AS author,
+                    u.surname,
+                    u.photo,
+                    a.description,
+                    p.id,
+                    s.name AS state,
+                    p.title,
+                    p.content,
+                    p.created_at,
+                    images.images,  -- Subquery de imágenes
+                    c.name AS category,
+                    COALESCE(cant_comment.count, 0) AS comment_count,
+                    COALESCE(cant_like.count, 0) AS like_count
+                FROM posts p
+                INNER JOIN authors a ON p.id_author = a.id
+                INNER JOIN users u ON a.id_user = u.id 
+                INNER JOIN categories c ON p.id_category = c.id
+                INNER JOIN states s ON p.id_state = s.id
+                LEFT JOIN (
                     SELECT 
-                        u.username AS author,
-                        u.surname,
-                        u.photo,
-                        a.description,
-                        p.id,
-                        s.name,
-                        p.title,
-                        p.content,
-                        p.created_at,
-                        pi2.image_url,
-                        c.name AS category,
-                        COALESCE(cant_comment.count, 0) AS comment_count,
-                        COALESCE(cant_like.count, 0) AS like_count
-                    FROM posts p
-                    INNER JOIN authors a ON p.id_author = a.id
-                    LEFT JOIN post_image pi2 ON p.id = pi2.id_post
-                    INNER JOIN users u ON a.id_user = u.id 
-                    INNER JOIN categories c ON p.id_category = c.id
-                    inner join states s on p.id_state = s.id
-                    LEFT JOIN (SELECT id_post, COUNT(*) AS count FROM comments GROUP BY id_post) AS cant_comment ON p.id = cant_comment.id_post
-                    LEFT JOIN (SELECT id_post, COUNT(*) AS count FROM post_likes GROUP BY id_post) AS cant_like ON p.id = cant_like.id_post
-                    WHERE p.id = $1;
+                        id_post, 
+                        array_agg(jsonb_build_object('id', pi.id,'url', pi.image_url, 'type', it.name)) AS images
+                    FROM post_image pi
+                    LEFT JOIN img_type it ON pi.id_type = it.id
+                    GROUP BY id_post
+                ) AS images ON p.id = images.id_post
+                LEFT JOIN (SELECT id_post, COUNT(*) AS count FROM comments GROUP BY id_post) AS cant_comment ON p.id = cant_comment.id_post
+                LEFT JOIN (SELECT id_post, COUNT(*) AS count FROM post_likes GROUP BY id_post) AS cant_like ON p.id = cant_like.id_post
+                WHERE p.id = $1;
                 `, [id])
 
             if (res.rowCount == 0) {
@@ -92,6 +99,51 @@ export class PostsModule {
             }
 
             return res.rows[0]
+
+        } catch (error) {
+            console.log(error)
+            return false
+        }
+    }
+
+    static async edit({ id, input }) {
+        const fields = Object.keys(input);
+        const values = Object.values(input);
+
+        if (fields.length === 0) {
+            return false
+        }
+
+        try {
+            const setClause = fields.map((field, index) => `${field} = $${index + 1}`).join(', ');
+            values.push(id);
+
+            const query = `UPDATE posts SET ${setClause} WHERE id = $${fields.length + 1};`;
+
+            const res = await connection.query(query, values);
+
+            if (res.rowCount == 0) {
+                return false
+            }
+
+            const post = await this.getById({ id })
+
+            return post;
+        } catch (error) {
+            console.log(error)
+            return false;
+        }
+    }
+
+    static async delete({ id }) {
+        try {
+            const res = await connection.query('update posts set id_state = 4 where id = $1', [id])
+
+            if(res.rowCount == 0) {
+                return false
+            }
+
+            return true
 
         } catch (error) {
             return false

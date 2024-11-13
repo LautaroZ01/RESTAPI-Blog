@@ -1,6 +1,9 @@
+import { uploadFile } from "../Models/Firebase/firebase.js";
 import { CategoryModule } from "../Models/Postgres/category.js";
 import { PostsModule } from "../Models/Postgres/post.js"
-import { validatPosts } from "../Schemas/post.js";
+import { PostImageModel } from "../Models/Postgres/postImage.js";
+import { StatesModule } from "../Models/Postgres/states.js";
+import { validatParcialPost, validatPosts } from "../Schemas/post.js";
 
 export class PostController {
     static async getAll(req, res) {
@@ -46,10 +49,34 @@ export class PostController {
             })
 
         } catch (error) {
-            console.log(error)
             return res.status(500).json({
                 status: 'error',
                 error: 'Se produjo un error al intentar traer todos las categorias'
+            })
+        }
+    }
+
+    static async getAllStates(req, res) {
+        try {
+            const request = await StatesModule.getAll();
+
+            if (!request) {
+                return res.status(400).json({
+                    status: "error",
+                    error: 'No hay estados disponibles'
+                })
+            }
+
+            return res.json({
+                status: 'success',
+                states: request
+            })
+
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json({
+                status: 'error',
+                error: 'Se produjo un error al intentar traer todos las estados'
             })
         }
     }
@@ -76,7 +103,7 @@ export class PostController {
                 })
             }
 
-            return res.json({
+            return res.status(201).json({
                 status: 'success',
                 post: newPost
             })
@@ -86,6 +113,79 @@ export class PostController {
             return res.status(500).json({
                 status: 'error',
                 error: 'Se produjo un error al intentar crear un articulos'
+            })
+        }
+    }
+
+    static async upload(req, res) {
+        const image = req.files.photo
+        const { id_post, id_type } = req.params
+
+        if (image && image.length > 0 && id_post) {
+            try {
+                const { ref, downloadURL } = await uploadFile(image[0], 1280, 720)
+
+                const postImage = await PostImageModel.create({ id_post, id_type, url: downloadURL })
+
+                if (!postImage) {
+                    return res.status(400).json({
+                        status: 'error',
+                        error: 'No se pudo subir la imagen'
+                    })
+                }
+
+                return res.json({
+                    status: 'success',
+                    message: 'La imagen se subio correctamente'
+                })
+            } catch (error) {
+                return res.status(500).json({
+                    status: "error",
+                    error: "Algo salio mal en el servidor"
+                })
+            }
+        } else {
+            return res.status(400).json({
+                status: 'error',
+                error: 'Faltan datos por enviar'
+            })
+        }
+    }
+
+    static async editUpload(req, res) {
+        const image = req.files.photo
+        const { id } = req.params
+
+        if (image && image.length > 0 && id) {
+
+            try {
+                const { ref, downloadURL } = await uploadFile(image[0], 1280, 720)
+
+                const editedImage = await PostImageModel.edit({ id, url: downloadURL })
+
+                if (!editedImage) {
+                    return res.status(400).json({
+                        status: 'error',
+                        error: 'No se pudo actualizar la imagen'
+                    })
+                }
+
+                return res.json({
+                    status: 'success',
+                    message: 'La imagen se subio correctamente'
+                })
+
+            } catch (error) {
+                return res.status(500).json({
+                    status: "error",
+                    error: "Algo salio mal en el servidor"
+                })
+            }
+
+        } else {
+            return res.status(400).json({
+                status: 'error',
+                error: 'Faltan datos por enviar'
             })
         }
     }
@@ -117,8 +217,65 @@ export class PostController {
     }
 
     // Editar
+    static async edit(req, res) {
+        const post = validatParcialPost(req.body)
+        const { id } = req.params
 
-    // Cambiar visualizacion
+        if (post.error) {
+            return res.status(400).json({
+                status: 'error',
+                error: JSON.parse(post.error.message)
+            })
+        }
 
-    // Elimniar
+        try {
+            const editPost = await PostsModule.edit({ id, input: post.data });
+
+            if (!editPost) {
+                return res.status(400).json({
+                    status: 'error',
+                    error: 'No se pudo actualizar el post'
+                })
+            }
+
+            return res.json({
+                status: 'success',
+                post: editPost
+            })
+
+        } catch (error) {
+            return res.status(500).json({
+                status: 'error',
+                error: 'Algo salio mal en el servidor'
+            })
+        }
+    }
+
+    // Elimniar (Cambiar visualizacion)
+    static async delete(req, res) {
+        const { id } = req.body
+
+        try {
+
+            const deletedPost = await PostsModule.delete({id})
+
+            if(!deletedPost){
+                return res.status(400).json({
+                    status: 'error',
+                    error: 'No se pudo eliminar el post'
+                })
+            }
+
+            res.json({
+                status: 'success',
+                message: 'El post se elimino correctamente'
+            })
+
+        } catch (error) {
+            return res.status(500).json({
+                status: 'error',
+                error: 'Algo salio mal en el servidor'
+            })
+        }
+    }
 }

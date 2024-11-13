@@ -16,7 +16,11 @@ const postSchema = z.object({
         invalid_type_error: "La categoria debe ser un entero",
         message: 'La categoria debe ser un numero entero',
         required_error: 'La categoria es obligatorio'
-    })
+    }),
+    id_state: z.number({
+        invalid_type_error: "El estado debe ser un entero",
+        message: 'El estado debe ser un numero entero'
+    }).default(2)
 })
 
 export function validatPosts(object) {
