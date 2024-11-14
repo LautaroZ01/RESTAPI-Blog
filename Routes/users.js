@@ -10,7 +10,7 @@ export const userRouter = Router();
 
 
 userRouter.get('/', [auth, adminMiddleware], UserController.getAll)
-userRouter.post('/rol', [auth, adminMiddleware], UserController.editRol)
+userRouter.patch('/rol', [auth, adminMiddleware], UserController.editRol)
 userRouter.get('/logout', UserController.logout) 
 userRouter.get('/sesion', auth, UserController.getSession)
 userRouter.get('/profile', auth, UserController.profile)

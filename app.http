@@ -19,8 +19,8 @@ POST http://localhost:3000/api/user/login
 Content-Type: application/json
 
 {
-  "email": "ender@gmail.com",
-  "password": "123"
+  "email": "lautarozule80@gmail.com",
+  "password": "123456"
 }
 
 ### Editar un usuario
@@ -30,6 +30,15 @@ Content-Type: application/json
 {
   "surname": "Tomate",
   "username": "Lautaro"
+}
+
+### Editar un rol de un usuario
+PATCH http://localhost:3000/api/user/rol
+Content-Type: application/json
+
+{
+  "id_user": 3,
+  "id_rol": 1
 }
 
 ### Ver perfil de usuario
@@ -53,6 +62,9 @@ Content-Type: application/json
 ### Recuperar todos los posts
 GET http://localhost:3000/api/post
 
+### Recuperar todos los posts para el autor o administrador
+GET http://localhost:3000/api/post/private?status=all
+
 ### Recuperar todas las categorias
 GET http://localhost:3000/api/post/categories
 
@@ -72,7 +84,6 @@ Content-Type: application/json
 {
   "id": 4
 }
-
 
 ### Insertar un articulo
 POST http://localhost:3000/api/post

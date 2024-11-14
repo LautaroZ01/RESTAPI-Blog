@@ -32,6 +32,32 @@ export class PostController {
         }
     }
 
+    static async getAllP(req, res) {
+        const { category, limit, status } = req.query
+
+        try {
+            const posts = await PostsModule.getAll({ category, limit, status });
+
+            if (!posts) {
+                return res.status(400).json({
+                    status: "error",
+                    error: 'No hay articulos disponibles'
+                })
+            }
+
+            return res.json({
+                status: 'success',
+                posts
+            })
+
+        } catch (error) {
+            return res.status(500).json({
+                status: 'error',
+                error: 'Se produjo un error al intentar traer todos los articulos'
+            })
+        }
+    }
+
     static async getAllCategories(req, res) {
         try {
             const request = await CategoryModule.getAll();
@@ -257,9 +283,9 @@ export class PostController {
 
         try {
 
-            const deletedPost = await PostsModule.delete({id})
+            const deletedPost = await PostsModule.delete({ id })
 
-            if(!deletedPost){
+            if (!deletedPost) {
                 return res.status(400).json({
                     status: 'error',
                     error: 'No se pudo eliminar el post'

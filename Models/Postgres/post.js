@@ -2,10 +2,10 @@ import { connection } from "../../Database/postgres.js";
 import { AuthroModule } from "./author.js";
 
 export class PostsModule {
-    static async getAll({ category = '', limit = null }) {
+    static async getAll({ category = '', limit = null, status = 'publico' }) {
 
         try {
-            const res = await connection.query('select * from get_products($1, $2);', [category, limit])
+            const res = await connection.query('select * from get_products($1, $2, $3);', [category, limit, status])
 
             if (res.rowCount == 0) {
                 return false
