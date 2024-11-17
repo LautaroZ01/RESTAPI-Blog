@@ -1,11 +1,11 @@
 import { connection } from "../../Database/postgres.js";
-import { AuthroModule } from "./author.js";
+import { AuthorModule } from "./author.js";
 
 export class PostsModule {
-    static async getAll({ category = '', limit = null, status = 'publico' }) {
+    static async getAll({ category = '', limit = null, status = 'publico', id_user = null }) {
 
         try {
-            const res = await connection.query('select * from get_products($1, $2, $3);', [category, limit, status])
+            const res = await connection.query('select * from get_products($1, $2, $3, $4);', [category, limit, status, id_user])
 
             if (res.rowCount == 0) {
                 return false
@@ -21,7 +21,7 @@ export class PostsModule {
         const { id_author } = input
 
         try {
-            const resAuthor = await AuthroModule.getById({ id: id_author })
+            const resAuthor = await AuthorModule.getById({ id: id_author })
 
             if (!resAuthor) {
                 return false
@@ -53,7 +53,6 @@ export class PostsModule {
             return res.rows[0];
 
         } catch (error) {
-            console.log(error)
             return false;
         }
     }
@@ -63,6 +62,8 @@ export class PostsModule {
 
             const res = await connection.query(`
                 SELECT 
+                    a.id as id_author,
+                    u.id as id_user,
                     u.username AS author,
                     u.surname,
                     u.photo,

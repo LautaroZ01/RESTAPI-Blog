@@ -33,10 +33,10 @@ export class PostController {
     }
 
     static async getAllP(req, res) {
-        const { category, limit, status } = req.query
+        const { category, limit, status, id } = req.query
 
         try {
-            const posts = await PostsModule.getAll({ category, limit, status });
+            const posts = await PostsModule.getAll({ category, limit, status, id_user: id });
 
             if (!posts) {
                 return res.status(400).json({

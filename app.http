@@ -228,3 +228,83 @@ Content-Type: application/json
 {
   "id": 4
 }
+
+### ----------------------------------------------------
+
+### Recupera un autor por su id de usuario
+GET http://localhost:3000/api/author/1
+
+### Editar un autor
+PATCH http://localhost:3000/api/author
+Content-Type: application/json
+
+{
+  "bio": "Un desarrollador de sitios webs"
+}
+
+
+### ----------------------------------------------------
+
+### Mostrar redes sociales por autor
+GET http://localhost:3000/api/author/social/1
+
+### Agreaga una red social
+POST http://localhost:3000/api/author/social
+Content-Type: application/json
+
+{
+  "type": "Instagram",
+  "name": "@lautaroz",
+  "link": "instagram.com",
+  "id_author": 1
+}
+
+### Actualiza una red social
+PATCH http://localhost:3000/api/author/social/7
+Content-Type: application/json
+
+{
+  "name": "Facebook",
+  "link": "facebook.com"
+}
+
+### Elimina una red social
+DELETE  http://localhost:3000/api/author/social
+Content-Type: application/json
+
+{
+  "id": 7
+}
+
+### ----------------------------------------------------
+
+### Recupera los contactos de un autor
+GET http://localhost:3000/api/author/contact/1
+
+### Agreaga un contacto
+POST http://localhost:3000/api/author/contact
+Content-Type: application/json
+
+{
+  "type": "WhatsApp",
+  "name": "Lautaro",
+  "description": "+54 123 123456",
+  "id_author": 1
+}
+
+### Actualiza un contacto
+PATCH http://localhost:3000/api/author/contact/1
+Content-Type: application/json
+
+{
+  "name": "WhatsApp",
+  "description": "+54 123 123456"
+}
+
+### Elimina un contacto
+DELETE  http://localhost:3000/api/author/contact
+Content-Type: application/json
+
+{
+  "id": 1
+}

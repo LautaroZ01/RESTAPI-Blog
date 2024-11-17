@@ -11,6 +11,7 @@ import { likeRouter } from './Routes/likes.js';
 import { commentRouter } from './Routes/comments.js';
 import { roleRouter } from './Routes/roles.js';
 import { categoryRouter } from './Routes/category.js';
+import { authorRouter } from './Routes/author.js';
 
 
 dotenv.config()
@@ -43,6 +44,7 @@ app.use('/api/like', likeRouter);
 app.use('/api/comment', commentRouter);
 app.use('/api/rol', roleRouter);
 app.use('/api/category', categoryRouter);
+app.use('/api/author', authorRouter);
 
 
 app.listen(PORT, () => {
