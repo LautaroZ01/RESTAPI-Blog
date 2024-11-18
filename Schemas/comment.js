@@ -15,7 +15,11 @@ const commentSchema = z.object({
         invalid_type_error: "El comentario debe ser un string",
         message: 'El comentario debe ser un string',
         required_error: "El contenido del comentario es obligatorio"
-    }).max(355, { message: 'El comentario es demasiado largo' })
+    }).max(355, { message: 'El comentario es demasiado largo' }),
+    status: z.string({
+        invalid_type_error: "Es estado debe ser una cadena de caracteres",
+        message: 'Es estado debe ser una cadena de caracteres'
+    }).default('H')
 })
 
 export function validatComments(object) {

@@ -3,6 +3,7 @@ import { PostController } from "../Controllers/Posts.js";
 import { auth } from '../Middlewares/auth.js'
 import { authorMiddleware } from "../Middlewares/author.js";
 import { upload } from "../Middlewares/upload.js";
+import { adminMiddleware } from "../Middlewares/admin.js";
 
 export const postRouter = Router();
 
@@ -18,3 +19,4 @@ postRouter.get('/estados', [auth, authorMiddleware], PostController.getAllStates
 postRouter.get('/:id', PostController.getById);
 
 postRouter.delete('/', [auth, authorMiddleware], PostController.delete);
+postRouter.delete('/private', [auth, adminMiddleware], PostController.deletePost);

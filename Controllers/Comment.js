@@ -13,11 +13,11 @@ export class CommentController {
             })
         }
 
-        const { id_post, content } = comment.data
+        const { id_post, content, status } = comment.data
 
         try {
 
-            const newComment = await CommentModel.Create({ id_post, id_user: id, content })
+            const newComment = await CommentModel.Create({ id_post, id_user: id, content, status })
 
             if (!newComment) {
                 return res.status(400).json({
@@ -100,6 +100,32 @@ export class CommentController {
         }
     }
 
+    static async getByAdmin(req, res) {
+        const { id } = req.params
+
+        try {
+            const comments = await CommentModel.getById({ id_post: id, isAdmin: true })
+
+            if (!comments) {
+                return res.status(200).json({
+                    status: 'error',
+                    error: 'Este post no tiene comentarios'
+                })
+            }
+
+            return res.json({
+                status: 'success',
+                comments
+            })
+
+        } catch (error) {
+            return res.status(500).json({
+                status: 'error',
+                error: 'Error interno del servidor'
+            })
+        }
+    }
+
     static async delete(req, res) {
         const { id } = req.auth
 
@@ -118,6 +144,32 @@ export class CommentController {
             return res.json({
                 status: 'success',
                 message: 'Comentario eliminado exitosamente'
+            })
+
+        } catch (error) {
+            return res.status(500).json({
+                status: 'error',
+                error: 'Error interno del servidor'
+            })
+        }
+    }
+
+    static async changeState(req, res) {
+        const { id, status } = req.body
+
+        try {
+            const comment = await CommentModel.ChangeState({ id, status });
+
+            if (!comment) {
+                return res.status(400).json({
+                    status: 'error',
+                    error: 'No se pudo deshabilitar el comentario de este post'
+                })
+            }
+
+            return res.json({
+                status: 'success',
+                message: 'Comentario deshabilitado exitosamente'
             })
 
         } catch (error) {

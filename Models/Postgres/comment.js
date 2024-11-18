@@ -1,15 +1,15 @@
 import { connection } from "../../Database/postgres.js";
 
 export class CommentModel {
-    static async Create({ id_post, id_user, content }) {
+    static async Create({ id_post, id_user, content, status }) {
         try {
-            const res = await connection.query('insert into comments (id_post , id_user, content) values ($1, $2, $3) RETURNING *;', [id_post, id_user, content])
+            const res = await connection.query('insert into comments (status, id_post , id_user, content) values ($1, $2, $3, $4) RETURNING *;', [status, id_post, id_user, content])
 
             if (res.rowCount == 0) {
                 return false;
             }
             const newComment = await connection.query(`
-                select u.id as id_user, u.username, u.photo, c.id, c.content, c.create_at from comments c 
+                select u.id as id_user, u.username, u.photo, c.id, c.status, c.content, c.create_at from comments c 
                 inner join users u on c.id_user = u.id
                 where c.id = $1;`, [res.rows[0].id])
 
@@ -45,14 +45,24 @@ export class CommentModel {
         }
     }
 
-    static async getById({ id_post }) {
+    static async getById({ id_post, isAdmin = false }) {
         try {
-            const res = await connection.query(`
-                select u.id as id_user, u.username, u.photo, c.id, c.content, c.create_at from comments c 
-                inner join users u on c.id_user = u.id
-                where c.id_post = $1 order by c.create_at desc; `,
-                [id_post]
-            )
+            let res
+            if (isAdmin) {
+                res = await connection.query(`
+                    select u.id as id_user, u.username, u.photo, c.id, c.status, c.content, c.create_at from comments c 
+                    inner join users u on c.id_user = u.id
+                    where c.id_post = $1 order by c.create_at desc; `,
+                    [id_post]
+                )
+            } else {
+                res = await connection.query(`
+                    select u.id as id_user, u.username, u.photo, c.id, c.status, c.content, c.create_at from comments c 
+                    inner join users u on c.id_user = u.id
+                    where c.id_post = $1 and c.status like 'H' order by c.create_at desc; `,
+                    [id_post]
+                )
+            }
 
             if (res.rowCount == 0) {
                 return false;
@@ -74,6 +84,20 @@ export class CommentModel {
 
             return true;
 
+        } catch (error) {
+            return false
+        }
+    }
+
+    static async ChangeState({ id, status }) {
+        try {
+            const res = await connection.query('update comments set status = $1 where id = $2', [status, id])
+
+            if (res.rowCount == 0) {
+                return false
+            }
+
+            return true
         } catch (error) {
             return false
         }

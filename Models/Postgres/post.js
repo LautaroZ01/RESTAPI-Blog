@@ -140,7 +140,22 @@ export class PostsModule {
         try {
             const res = await connection.query('update posts set id_state = 4 where id = $1', [id])
 
-            if(res.rowCount == 0) {
+            if (res.rowCount == 0) {
+                return false
+            }
+
+            return true
+
+        } catch (error) {
+            return false
+        }
+    }
+
+    static async deletePost({ id }) {
+        try {
+            const res = await connection.query('delete from posts where id = $1', [id])
+
+            if (res.rowCount == 0) {
                 return false
             }
 

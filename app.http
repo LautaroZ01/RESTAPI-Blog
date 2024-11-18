@@ -19,7 +19,7 @@ POST http://localhost:3000/api/user/login
 Content-Type: application/json
 
 {
-  "email": "lautarozule80@gmail.com",
+  "email": "facundozuleta70@gmail.com",
   "password": "123456"
 }
 
@@ -75,14 +75,22 @@ GET http://localhost:3000/api/post/estados
 GET http://localhost:3000/api/post?category=Alienigenas&limit=1
 
 ### Recuperar un post por id
-GET http://localhost:3000/api/post/4
+GET http://localhost:3000/api/post/1
 
-### Recuperar un post por id
+### Deshabilita un post por id
 DELETE  http://localhost:3000/api/post
 Content-Type: application/json
 
 {
   "id": 4
+}
+
+### Elimina un post por id
+DELETE  http://localhost:3000/api/post/private
+Content-Type: application/json
+
+{
+  "id": 7
 }
 
 ### Insertar un articulo
@@ -162,8 +170,77 @@ Content-Type: application/json
   "content": "Hola comentario editado"
 }
 
-### Recuperar comentarios de un post
+### Recuperar comentarios habilitados de un post
 GET http://localhost:3000/api/comment/1
+
+### Recuperar comentarios de un post
+GET http://localhost:3000/api/comment/private/1
+
+
+### ----------------------------------------------------
+
+### Recupera los tags
+GET http://localhost:3000/api/tag
+
+
+### Agrega un tag
+POST http://localhost:3000/api/tag
+Content-Type: application/json
+
+{
+  "name": "Paisajes rurales"
+}
+
+### Actualiza un tag
+PATCH http://localhost:3000/api/tag/5
+Content-Type: application/json
+
+{
+  "name": "Paisajes rurales"
+}
+
+### Elimina un tag
+DELETE http://localhost:3000/api/tag
+Content-Type: application/json
+
+{
+  "id": 4
+}
+
+### Recupera los tags de un post
+GET http://localhost:3000/api/tag/post/1
+
+### Agrega una tag a un post
+POST http://localhost:3000/api/tag/post
+Content-Type: application/json
+
+{
+  "id_post": 1,
+  "list": [
+    {
+      "id": 1
+    },
+    {
+      "id": 2
+    }
+  ]
+}
+
+### Agrega una tag a un post
+PATCH http://localhost:3000/api/tag/post/1
+Content-Type: application/json
+
+{
+  "list": [
+    {
+      "id": 1
+    },
+        {
+      "id": 2
+    }
+  ]
+}
+
 
 ### ----------------------------------------------------
 

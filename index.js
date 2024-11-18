@@ -12,6 +12,7 @@ import { commentRouter } from './Routes/comments.js';
 import { roleRouter } from './Routes/roles.js';
 import { categoryRouter } from './Routes/category.js';
 import { authorRouter } from './Routes/author.js';
+import { tagRoute } from './Routes/tag.js';
 
 
 dotenv.config()
@@ -40,6 +41,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/user', userRouter);
 app.use('/api/post', postRouter);
+app.use('/api/tag', tagRoute);
 app.use('/api/like', likeRouter);
 app.use('/api/comment', commentRouter);
 app.use('/api/rol', roleRouter);

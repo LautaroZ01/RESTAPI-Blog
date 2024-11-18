@@ -3,6 +3,7 @@ import { CategoryModule } from "../Models/Postgres/category.js";
 import { PostsModule } from "../Models/Postgres/post.js"
 import { PostImageModel } from "../Models/Postgres/postImage.js";
 import { StatesModule } from "../Models/Postgres/states.js";
+import { TagModule } from "../Models/Postgres/tag.js";
 import { validatParcialPost, validatPosts } from "../Schemas/post.js";
 
 export class PostController {
@@ -221,6 +222,7 @@ export class PostController {
 
         try {
             const data = await PostsModule.getById({ id });
+            const tags = await TagModule.GetByPostId({ id });
 
             if (!data) {
                 return res.status(400).json({
@@ -231,7 +233,8 @@ export class PostController {
 
             return res.json({
                 status: 'success',
-                post: data
+                post: data,
+                tags
             })
 
         } catch (error) {
@@ -284,6 +287,33 @@ export class PostController {
         try {
 
             const deletedPost = await PostsModule.delete({ id })
+
+            if (!deletedPost) {
+                return res.status(400).json({
+                    status: 'error',
+                    error: 'No se pudo eliminar el post'
+                })
+            }
+
+            res.json({
+                status: 'success',
+                message: 'El post se elimino correctamente'
+            })
+
+        } catch (error) {
+            return res.status(500).json({
+                status: 'error',
+                error: 'Algo salio mal en el servidor'
+            })
+        }
+    }
+
+    static async deletePost(req, res) {
+        const { id } = req.body
+
+        try {
+
+            const deletedPost = await PostsModule.deletePost({ id })
 
             if (!deletedPost) {
                 return res.status(400).json({
